@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decrypt (AES-256-GCM)</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Decrypt (AES-256-GCM)</h1>
+        <textarea id="input" class="form-control mb-3" rows="5" placeholder="Input data"></textarea>
+        <input id="passphrase" class="form-control mb-3" placeholder="Passphrase" />
+        <button id="decryptButton" class="btn btn-success btn-block">Decrypt</button>
+        <input type="file" id="fileUpload" class="form-control-file mt-3" />
+        <textarea id="output" class="form-control mt-3" rows="5" readonly placeholder="Output data"></textarea>
+        <button id="copyButton" class="btn btn-secondary btn-block mt-3">Copy</button>
+        <button id="downloadButton" class="btn btn-primary btn-block mt-3">Download</button>
+    </div>
+    <script src="scripts/crypto-gcm.js"></script>
+    <script src="scripts/ui-handler.js"></script>
+    <script src="scripts/decrypt.js"></script>
+    <script>
+        window.decryptionMethod = decryptGCM;
+    </script>
+</body>
+</html>

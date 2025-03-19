@@ -1,71 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
+    const input = document.getElementById("input");
+    const passphraseInput = document.getElementById("passphrase");
     const decryptButton = document.getElementById("decryptButton");
-    const encryptedInput = document.getElementById("encryptedInput");
-    const passphraseInput = document.getElementById("passphraseInput");
-    const decryptedOutput = document.getElementById("decryptedOutput");
+    const fileUpload = document.getElementById("fileUpload");
+    const output = document.getElementById("output");
+    const copyButton = document.getElementById("copyButton");
+    const downloadButton = document.getElementById("downloadButton");
 
-    if (decryptButton && encryptedInput && passphraseInput && decryptedOutput) {
-        decryptButton.addEventListener("click", async () => {
-            const encryptedData = encryptedInput.value.trim();
-            const passphrase = passphraseInput.value.trim();
+    setupFileUpload(input, fileUpload);
+    setupCopyButton(output, copyButton);
+    setupDownloadButton(output, downloadButton, "decrypted.txt");
 
-            if (!encryptedData || !passphrase) {
-                alert("Please provide both encrypted data and a passphrase.");
-                return;
-            }
-
-            try {
-                const decryptedData = await decryptText(encryptedData, passphrase);
-                const yamlData = jsyaml.load(decryptedData);
-                decryptedOutput.value = jsyaml.dump(yamlData);
-            } catch (error) {
-                alert("Decryption failed: " + error.message);
-            }
-        });
-    }
+    decryptButton.addEventListener("click", async () => {
+        try {
+            const decryptionMethod = window.decryptionMethod;
+            const decryptedData = await decryptionMethod(input.value, passphraseInput.value);
+            output.value = decryptedData;
+        } catch (error) {
+            alert("Decryption failed: " + error.message);
+        }
+    });
 });
-
-// Import existing decryption functions from the CV project
-async function importKey(passphrase) {
-    const enc = new TextEncoder();
-    const keyMaterial = await crypto.subtle.importKey(
-        "raw",
-        enc.encode(passphrase),
-        { name: "PBKDF2" },
-        false,
-        ["deriveKey"]
-    );
-    return keyMaterial;
-}
-
-async function deriveKey(passphrase, salt) {
-    const keyMaterial = await importKey(passphrase);
-    return crypto.subtle.deriveKey(
-        {
-            name: "PBKDF2",
-            salt: salt,
-            iterations: 100000,
-            hash: "SHA-256",
-        },
-        keyMaterial,
-        { name: "AES-GCM", length: 256 },
-        false,
-        ["decrypt"]
-    );
-}
-
-async function decryptText(encryptedData, passphrase) {
-    const data = JSON.parse(encryptedData);
-    const salt = Uint8Array.from(atob(data.salt), c => c.charCodeAt(0));
-    const iv = Uint8Array.from(atob(data.iv), c => c.charCodeAt(0));
-    const ciphertext = Uint8Array.from(atob(data.ciphertext), c => c.charCodeAt(0));
-
-    const key = await deriveKey(passphrase, salt);
-    const decryptedBuffer = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: iv },
-        key,
-        ciphertext
-    );
-
-    return new TextDecoder().decode(decryptedBuffer);
-}
