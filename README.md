@@ -12,6 +12,7 @@ Cryptalot is a lightweight, client-side cryptography tool that allows users to e
 - **AES-256-CBC Encryption/Decryption**:
   - Encrypt and decrypt data using the AES-256-CBC algorithm.
   - Automatically generates a random salt and IV for each encryption.
+  - Supports incremental chunk processing for large data sets.
   - Outputs encryption results in a JSON structure containing `salt`, `iv`, and `ciphertext`.
 
 - **Client-Side Only**:
@@ -78,6 +79,7 @@ The encryption output is a JSON object with the following structure:
 - **Client-Side Only**: All cryptographic operations are performed in the browser. No data is sent to any server.
 - **Randomized Salt and IV**: Each encryption operation generates a unique salt and IV for enhanced security.
 - **Passphrase-Based Encryption**: The passphrase is used to derive the encryption key, ensuring that only users with the correct passphrase can decrypt the data.
+- **Incremental Processing**: AES-256-CBC encryption and decryption support incremental chunk processing, making it suitable for large data sets.
 
 ## Getting Started
 
@@ -89,7 +91,7 @@ The encryption output is a JSON object with the following structure:
 ## Supported Algorithms
 
 - **AES-256-GCM**: Recommended for most use cases due to its authenticated encryption.
-- **AES-256-CBC**: Supported for compatibility with legacy systems.
+- **AES-256-CBC**: Supported for compatibility with legacy systems and large data sets.
 
 ## Browser Compatibility
 

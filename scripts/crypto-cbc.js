@@ -1,6 +1,6 @@
 async function encryptCBC(data, passphrase) {
     const salt = crypto.getRandomValues(new Uint8Array(16));
-    const iv = crypto.getRandomValues(new Uint8Array(16));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
     const key = await deriveKeyCBC(passphrase, salt);
 
     const ciphertextChunks = [];
