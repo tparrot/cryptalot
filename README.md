@@ -100,11 +100,6 @@ Cryptalot uses the Web Crypto API, which is supported in modern browsers. Ensure
 - Microsoft Edge (v12+)
 - Safari (v11+)
 
-## Try It Yourself
-
-You can try Cryptalot directly in your browser by visiting:
-[cryptalot.tweb.li](https://cryptalot.tweb.li)
-
 ## Disclaimer
 
 Cryptalot is provided as-is, without any warranty. Use it at your own risk. While the tool is designed to be secure, it is not intended for highly sensitive or mission-critical data.

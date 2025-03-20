@@ -7,14 +7,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const copyButton = document.getElementById("copyButton");
     const downloadButton = document.getElementById("downloadButton");
 
-    setupFileUpload(input, fileUpload);
+    setupFileUpload(input, fileUpload, true); // Enable binary mode for file uploads
     setupCopyButton(output, copyButton);
     setupDownloadButton(output, downloadButton, "encrypted.json");
 
     encryptButton.addEventListener("click", async () => {
         try {
-            const encryptionMethod = window.encryptionMethod;
-            const encryptedData = await encryptionMethod(input.value, passphraseInput.value);
+            if (typeof window.encryptionMethod !== "function") {
+                throw new Error("Encryption method is not defined or is not a function.");
+            }
+            const data = input.fileData || new TextEncoder().encode(input.value); // Use binary data if available
+            const encryptedData = await window.encryptionMethod(data, passphraseInput.value);
             output.value = encryptedData;
         } catch (error) {
             alert("Encryption failed: " + error.message);

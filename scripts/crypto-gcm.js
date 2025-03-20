@@ -1,19 +1,24 @@
-async function encryptGCM(text, passphrase) {
+async function encryptGCM(data, passphrase) {
     const salt = crypto.getRandomValues(new Uint8Array(16));
     const iv = crypto.getRandomValues(new Uint8Array(12));
     const key = await deriveKeyGCM(passphrase, salt);
 
-    const enc = new TextEncoder();
-    const ciphertext = await crypto.subtle.encrypt(
-        { name: "AES-GCM", iv: iv },
-        key,
-        enc.encode(text)
-    );
+    const ciphertextChunks = [];
+    await processChunksIncrementally(data, async (chunk) => {
+        const encryptedChunk = await crypto.subtle.encrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            chunk
+        );
+        ciphertextChunks.push(new Uint8Array(encryptedChunk));
+    });
+
+    const mergedCiphertext = mergeChunksIncrementally(ciphertextChunks);
 
     return JSON.stringify({
         salt: btoa(String.fromCharCode(...salt)),
         iv: btoa(String.fromCharCode(...iv)),
-        ciphertext: btoa(String.fromCharCode(...new Uint8Array(ciphertext))),
+        ciphertext: btoa(String.fromCharCode(...mergedCiphertext)), // Base64-encoded ciphertext
     });
 }
 
@@ -24,13 +29,20 @@ async function decryptGCM(encryptedData, passphrase) {
     const ciphertext = Uint8Array.from(atob(data.ciphertext), c => c.charCodeAt(0));
 
     const key = await deriveKeyGCM(passphrase, salt);
-    const decryptedBuffer = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: iv },
-        key,
-        ciphertext
-    );
 
-    return new TextDecoder().decode(decryptedBuffer);
+    const decryptedChunks = [];
+    await processChunksIncrementally(ciphertext, async (chunk) => {
+        const decryptedChunk = await crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: iv },
+            key,
+            chunk
+        );
+        decryptedChunks.push(new Uint8Array(decryptedChunk));
+    });
+
+    const mergedDecryptedData = mergeChunksIncrementally(decryptedChunks);
+
+    return new TextDecoder().decode(mergedDecryptedData);
 }
 
 async function deriveKeyGCM(passphrase, salt) {

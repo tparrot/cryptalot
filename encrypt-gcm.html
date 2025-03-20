@@ -11,17 +11,19 @@
         <h1 class="text-center">Encrypt (AES-256-GCM)</h1>
         <textarea id="input" class="form-control mb-3" rows="5" placeholder="Input data"></textarea>
         <input id="passphrase" class="form-control mb-3" placeholder="Passphrase" />
+        <input type="file" id="fileUpload" class="form-control-file mb-3" />
         <button id="encryptButton" class="btn btn-primary btn-block">Encrypt</button>
-        <input type="file" id="fileUpload" class="form-control-file mt-3" />
         <textarea id="output" class="form-control mt-3" rows="5" readonly placeholder="Output data"></textarea>
         <button id="copyButton" class="btn btn-secondary btn-block mt-3">Copy</button>
-        <button id="downloadButton" class="btn btn-success btn-block mt-3">Download</button>
+        <button id="downloadButton" class="btn btn-success btn-block mt-3">Download JSON</button>
     </div>
-    <script src="scripts/encrypt.js"></script>
+    <script src="scripts/crypto-utils.js"></script>
     <script src="scripts/crypto-gcm.js"></script>
-    <script src="scripts/ui-handler.js"></script>
     <script>
+        // Ensure encryptionMethod is defined before encrypt.js is loaded
         window.encryptionMethod = encryptGCM;
     </script>
+    <script src="scripts/ui-handler.js"></script>
+    <script src="scripts/encrypt.js"></script>
 </body>
 </html>

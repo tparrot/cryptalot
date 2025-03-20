@@ -1,9 +1,25 @@
-function setupFileUpload(inputElement, fileUploadElement) {
+function setupFileUpload(inputElement, fileUploadElement, isBinary = false) {
     fileUploadElement.addEventListener("change", (event) => {
-        const file = event.target.files[0];
+        const file = event.target.files[0]; // Ensure a file is selected
+        if (!file) {
+            alert("No file selected. Please upload a valid file.");
+            return;
+        }
+
         const reader = new FileReader();
-        reader.onload = (e) => (inputElement.value = e.target.result);
-        reader.readAsText(file);
+        reader.onload = (e) => {
+            if (isBinary) {
+                inputElement.fileData = new Uint8Array(e.target.result); // Store binary data
+            } else {
+                inputElement.value = e.target.result; // Store text data
+            }
+        };
+
+        if (isBinary) {
+            reader.readAsArrayBuffer(file); // Read binary data
+        } else {
+            reader.readAsText(file); // Read text data
+        }
     });
 }
 
@@ -16,7 +32,7 @@ function setupCopyButton(outputElement, copyButton) {
 
 function setupDownloadButton(outputElement, downloadButton, filename) {
     downloadButton.addEventListener("click", () => {
-        const blob = new Blob([outputElement.value], { type: "text/plain" });
+        const blob = new Blob([outputElement.value], { type: "application/json" });
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = filename;

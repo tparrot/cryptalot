@@ -15,13 +15,15 @@
         <input type="file" id="fileUpload" class="form-control-file mt-3" />
         <textarea id="output" class="form-control mt-3" rows="5" readonly placeholder="Output data"></textarea>
         <button id="copyButton" class="btn btn-secondary btn-block mt-3">Copy</button>
-        <button id="downloadButton" class="btn btn-success btn-block mt-3">Download</button>
+        <button id="downloadButton" class="btn btn-success btn-block mt-3">Download JSON</button>
     </div>
+    <script src="scripts/crypto-utils.js"></script>
     <script src="scripts/crypto-cbc.js"></script>
-    <script src="scripts/ui-handler.js"></script>
-    <script src="scripts/encrypt.js"></script>
     <script>
+        // Ensure encryptionMethod is defined before encrypt.js is loaded
         window.encryptionMethod = encryptCBC;
     </script>
+    <script src="scripts/ui-handler.js"></script>
+    <script src="scripts/encrypt.js"></script>
 </body>
 </html>
